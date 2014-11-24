@@ -4,11 +4,12 @@ rankall <- function(outcome, num = "best")
         data <- read.csv("outcome-of-care-measures.csv",colClasses = "character")
         result <- data.frame()
         
-        ## Check that state and outcome are valid
+        ## Check that outcome are valid
         if(outcome == "heart attack" 
            || outcome == "heart failure" 
            || outcome == "pneumonia")
         {
+                ##this way to do the thing is very mass ,but i can't think of some good and easy way,so...
                 result <- rbind(result,rankeach(data[1:98,c(2,7,11,17,23)],outcome,num)) 
                 result <- rbind(result,rankeach(data[99:115,c(2,7,11,17,23)],outcome,num)) 
                 result <- rbind(result,rankeach(data[116:192,c(2,7,11,17,23)],outcome,num))
@@ -62,24 +63,18 @@ rankall <- function(outcome, num = "best")
                 result <- rbind(result,rankeach(data[4454:4507,c(2,7,11,17,23)],outcome,num)) 
                 result <- rbind(result,rankeach(data[4508:4632,c(2,7,11,17,23)],outcome,num)) 
                 result <- rbind(result,rankeach(data[4633:4661,c(2,7,11,17,23)],outcome,num)) 
-                result <- rbind(result,rankeach(data[4662,c(2,7,11,17,23)],outcome,num)) 
-                ##result <- rbind(result,rankeach(data[4663:4706,c(2,7,11,17,23)],outcome,num))
-                
+                result <- rbind(result,rankeach(data[4662,c(2,7,11,17,23)],outcome,num))
                 
                 result[order(result[,2]),]
-                
         }
         
         else
         {
                 stop("invalid outcome")
         }
-        ## For each state, find the hospital of the given rank
-        
-        ## Return a data frame with the hospital names and the
-        ## (abbreviated) state name
 }
 
+## For each state, find the hospital of the given rank
 rankeach <- function(tempdata,outcome,num)
 {
         valid <- data.frame()
@@ -103,11 +98,11 @@ rankeach <- function(tempdata,outcome,num)
         ## Return hospital name in that state with the given rank
         ## 30-day death rate
         class(valid[,3]) <- "numeric"
-        
         valid <- valid[order(valid[,3],valid[,1],na.last = TRUE),]
+        
         if(num == "best") num <- 1
-        ##print(nrow(valid))
         if(num == "worst") num <- nrow(valid)
+        
         if(num <= nrow(valid)) 
         {
                 c <- valid[num,c(1,2)]
@@ -117,7 +112,7 @@ rankeach <- function(tempdata,outcome,num)
                 c <- cbind("<NA>",tempdata[1,2])
         }
         
-        colnames(c) <- c("hospital","state")
+        colnames(c) <- c("hospital","state") ##if the arguments of rbind have diffrent names ,the function will not work
         rownames(c) <- valid[1,2]
         c
 }
