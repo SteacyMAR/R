@@ -1,17 +1,21 @@
+
 best <- function(state,outcome) {
+        ## Read outcome data
         data <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+        
+        ## flags to check if the input is correct
         countstate <- 0
         countoutcome <- 0
-       
-        tempframe <- data.frame()
-        minv <- c()
+        
+        tempframe <- data.frame() ## a dataframe to store some information we care about
+        minv <- c() ## a vector(because maybe there are one more hospital's rate are the same) to store the best hospital's name and return it 
         
         for(i in 1:nrow(data))
         {
                 if(data[i,7] == state)
                 {
                         countstate <- 1
-                        if(outcome == "heart attack" && data[i,11] != "Not Available")
+                        if(outcome == "heart attack" && data[i,11] != "Not Available") ## filter NA
                         {
                                 countoutcome <- 1
                                 tempframe <- rbind(tempframe,data[i,c(2,7,11)])
@@ -32,10 +36,9 @@ best <- function(state,outcome) {
         
         if(!identical(tempframe,data.frame()))
         {
-                class(tempframe[,3]) <- "numeric"
-                
-                
-                min <- min(tempframe[,3],na.rm = TRUE)
+                ##get the min rate value
+                class(tempframe[,3]) <- "numeric" 
+                min <- min(tempframe[,3],na.rm = TRUE) 
                 
                 for(i in 1:nrow(tempframe))
                 {
@@ -45,7 +48,7 @@ best <- function(state,outcome) {
                         }
                 }
                 
-                minv[order(minv, na.last = NA)]    
+                minv[order(minv, na.last = NA)]    ##order
         }
         else
         {
